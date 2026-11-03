@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Сайт-визитка заведения: меню, отзывы, контакты и вызов официанта.">
+  <title>Название заведения — QR-визитка</title>
+  <style>
+    :root {
+      --primary: #243a32;
+      --accent: #e58a3a;
+      --page: #faf6ef;
+      --card: #fffdfa;
+      --text: #242a26;
+      --muted: #777d74;
+      --radius: 18px;
+      font-family: Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--page); color: var(--text); }
+    main { width: min(100% - 28px, 460px); margin: 24px auto 40px; }
+    header {
+      padding: 32px 22px 28px; text-align: center; color: white;
+      background: var(--primary); border-radius: 26px;
+    }
+    .logo {
+      width: 66px; height: 66px; margin: 0 auto 14px; display: grid;
+      place-items: center; border-radius: 50%; background: var(--accent);
+      color: #29251f; font-size: 28px;
+    }
+    h1 { margin: 0; font: 600 29px/1.15 Georgia, serif; }
+    .type { margin: 10px 0; color: var(--accent); font-size: 10px; font-weight: 700; letter-spacing: .2em; }
+    header p { margin: 0; color: #e9e9e5; font-size: 13px; line-height: 1.5; }
+    nav { display: grid; gap: 10px; margin-top: 16px; }
+    .link {
+      min-height: 60px; padding: 11px 15px; display: flex; align-items: center;
+      gap: 13px; border: 1px solid #e8e2d8; border-radius: var(--radius);
+      background: var(--card); color: var(--text); text-decoration: none;
+      font: inherit; text-align: left; cursor: pointer;
+    }
+    .link:hover { border-color: var(--accent); transform: translateY(-1px); }
+    .icon {
+      width: 38px; height: 38px; flex: 0 0 auto; display: grid; place-items: center;
+      border-radius: 11px; background: #eee8dc; color: var(--primary); font-weight: 800;
+    }
+    .label { flex: 1; font-size: 14px; font-weight: 650; }
+    .arrow { color: #92958d; font-size: 18px; }
+    .call { border: 0; background: var(--accent); color: #29251f; font-weight: 750; }
+    .call .icon { background: #c9a975; color: #29251f; }
+    footer { margin-top: 18px; color: var(--muted); text-align: center; font-size: 11px; }
+    .notice { margin-top: 15px; padding: 13px; border-radius: 12px; background: #fff8e9; color: #685638; font-size: 12px; line-height: 1.5; }
+    .dialog-backdrop { position: fixed; inset: 0; display: none; place-items: center; padding: 20px; background: #101510aa; }
+    .dialog-backdrop.open { display: grid; }
+    .dialog { width: min(100%, 350px); padding: 24px; border-radius: 20px; background: white; text-align: center; }
+    .dialog h2 { margin: 0 0 8px; font: 600 23px Georgia, serif; }
+    .dialog p { color: #697168; font-size: 13px; line-height: 1.5; }
+    .dialog button { border: 0; border-radius: 10px; padding: 11px 20px; background: var(--primary); color: white; font-weight: 700; }
+    @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <div class="logo" id="logo">✦</div>
+      <h1 id="companyName">НАЗВАНИЕ ЗАВЕДЕНИЯ</h1>
+      <div class="type" id="companyType">РЕСТОРАН · КАФЕ · БАР</div>
+      <p id="welcome">Рады видеть вас! Выберите нужный раздел</p>
+    </header>
+
+    <nav aria-label="Разделы заведения">
+      <a class="link" data-url="gis" href="#" target="_blank" rel="noopener"><span class="icon">2Г</span><span class="label">Отзывы на 2ГИС</span><span class="arrow">↗</span></a>
+      <a class="link" data-url="yandex" href="#" target="_blank" rel="noopener"><span class="icon">Я</span><span class="label">Отзывы на Яндекс Картах</span><span class="arrow">↗</span></a>
+      <a class="link" data-url="google" href="#" target="_blank" rel="noopener"><span class="icon">G</span><span class="label">Отзывы в Google</span><span class="arrow">↗</span></a>
+      <a class="link" data-url="menu" href="#" target="_blank" rel="noopener"><span class="icon">☷</span><span class="label">Наше меню</span><span class="arrow">↗</span></a>
+      <a class="link" data-url="website" href="#" target="_blank" rel="noopener"><span class="icon">◎</span><span class="label">Сайт компании</span><span class="arrow">↗</span></a>
+      <a class="link" data-url="social" href="#" target="_blank" rel="noopener"><span class="icon">ВК</span><span class="label">Мы ВКонтакте</span><span class="arrow">↗</span></a>
+      <button class="link call" id="callWaiter" type="button"><span class="icon">♧</span><span class="label">Позвать официанта</span><span class="arrow">→</span></button>
+    </nav>
+    <div class="notice"><strong>Демонстрация:</strong> кнопка вызова официанта пока показывает тестовое сообщение. Для настоящих вызовов подключим уведомления персоналу и номер столика.</div>
+    <footer>Спасибо, что выбираете нас ♡</footer>
+  </main>
+
+  <div class="dialog-backdrop" id="dialog" role="dialog" aria-modal="true" aria-labelledby="dialogTitle">
+    <section class="dialog">
+      <div style="font-size:32px">🔔</div>
+      <h2 id="dialogTitle">Вызов официанта</h2>
+      <p>Это тестовая кнопка. После подключения системы уведомлений персонал будет получать вызов с номером столика.</p>
+      <button id="closeDialog" type="button">Понятно</button>
+    </section>
+  </div>
+
+  <script>
+    // НАСТРОЙКИ КОМПАНИИ: замени примеры своими данными и ссылками.
+    const company = {
+      name: "Кафе Уют",
+      type: "УЮТНОЕ КАФЕ",
+      welcome: "Добро пожаловать в Кафе Уют! Выберите нужный раздел",
+      logo: "🍽️",
+      links: {
+        gis: "https://2gis.ru/chelyabinsk/search/Friendly%2C%20%D1%83%D0%BB%D0%B8%D1%86%D0%B0%20%D0%91%D1%80%D0%B0%D1%82%D1%8C%D0%B5%D0%B2%20%D0%9A%D0%B0%D1%88%D0%B8%D1%80%D0%B8%D0%BD%D1%8B%D1%85%2C%20158/firm/70000001093089636?utm_source=chatgpt.com&immersive=on",
+        yandex: "https://yandex.com/maps/org/friendly_eda/39925247100/",
+        google: "https://www.google.com/maps/place/Friendly+EDA/@55.164585,61.29416,17z/data=!4m14!1m7!3m6!1s0x43c59341d86749a3:0x601dd90fcb9d8256!2sFriendly+EDA!8m2!3d55.164585!4d61.29416!16s%2Fg%2F11yztx_y_b!3m5!1s0x43c59341d86749a3:0x601dd90fcb9d8256!8m2!3d55.164585!4d61.29416!16s%2Fg%2F11yztx_y_b?entry=ttu&g_ep=EgoyMDI2MTAyOC4wIKXMDSoASAFQAw%3D%3D",
+        menu: "https://friendly-eda.ru/",
+        website: "https://example.com",
+        social: "https://vk.ru/cafefriendly",
+      }
+    };
+
+    document.title = `${company.name} — QR-визитка`;
+    document.getElementById("companyName").textContent = company.name;
+    document.getElementById("companyType").textContent = company.type;
+    document.getElementById("welcome").textContent = company.welcome;
+    document.getElementById("logo").textContent = company.logo;
+
+    function validWebAddress(value) {
+      try {
+        const url = new URL(value);
+        return ["http:", "https:"].includes(url.protocol) ? url.href : "";
+      } catch {
+        return "";
+      }
+    }
+
+    document.querySelectorAll("[data-url]").forEach(link => {
+      const key = link.dataset.url;
+      const address = validWebAddress(company.links[key] || "");
+      if (address) {
+        link.href = address;
+      } else {
+        link.hidden = true; // Скрываем кнопку, если ссылка ещё не добавлена.
+      }
+    });
+
+    const dialog = document.getElementById("dialog");
+    document.getElementById("callWaiter").addEventListener("click", () => dialog.classList.add("open"));
+    document.getElementById("closeDialog").addEventListener("click", () => dialog.classList.remove("open"));
+    dialog.addEventListener("click", event => {
+      if (event.target === dialog) dialog.classList.remove("open");
+    });
+  </script>
+</body>
+</html>
